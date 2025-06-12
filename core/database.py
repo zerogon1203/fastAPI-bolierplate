@@ -212,14 +212,17 @@ async def drop_tables():
 
 async def check_db_connection():
     """데이터베이스 연결 상태 확인"""
+    from sqlalchemy import text
     try:
         if AsyncSessionLocal is None:
             return False
         
         async with AsyncSessionLocal() as session:
-            await session.execute("SELECT 1")
+            await session.execute(text("SELECT 1"))
             return True
-    except Exception:
+    except Exception as e:
+        # 디버그용 임시 출력
+        print(f"DEBUG: check_db_connection 에러: {e}")
         return False
 
 

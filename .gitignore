@@ -151,7 +151,6 @@ Thumbs.db
 
 # Log files
 *.log
-logs/
 
 # Docker
 .dockerignore

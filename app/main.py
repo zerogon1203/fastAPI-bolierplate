@@ -12,13 +12,16 @@ from loguru import logger
 
 from core.settings import settings
 from core.database import create_tables, check_db_connection
-from core.logging import log_request, log_response
+from core.logging import log_request, log_response, setup_logging
 from app.api.v1.api import api_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """애플리케이션 생명주기 관리"""
+    # 로깅 설정 초기화
+    setup_logging()
+    
     # 시작 시
     logger.info("🚀 FastAPI 애플리케이션 시작")
     

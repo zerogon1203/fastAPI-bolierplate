@@ -39,6 +39,9 @@ pillow==10.4.0  # 이미지 처리
 # 로깅
 loguru==0.7.3
 
+# SQLAlchemy 비동기 지원
+greenlet==3.2.3
+
 # AI/LLM 관련
 langchain==0.3.18
 langchain-core==0.3.63

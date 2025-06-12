@@ -53,44 +53,40 @@ def setup_logging():
     logger.add(
         log_dir / "app.log",
         level=settings.LOG_LEVEL,
-        format=serialize_record,
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
         rotation="1 day",
         retention="30 days",
         compression="gz",
-        serialize=True,
     )
     
     # 에러 전용 로깅
     logger.add(
         log_dir / "error.log",
         level="ERROR",
-        format=serialize_record,
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
         rotation="1 week",
         retention="3 months",
         compression="gz",
-        serialize=True,
     )
     
     # AI 관련 로깅
     logger.add(
         log_dir / "ai.log",
         level="INFO",
-        format=serialize_record,
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
         rotation="1 day",
         retention="7 days",
         filter=lambda record: "ai" in record.get("extra", {}),
-        serialize=True,
     )
     
     # MCP 관련 로깅
     logger.add(
         log_dir / "mcp.log",
         level="INFO",
-        format=serialize_record,
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
         rotation="1 day",
         retention="7 days",
         filter=lambda record: "mcp" in record.get("extra", {}),
-        serialize=True,
     )
 
 

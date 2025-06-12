@@ -34,12 +34,37 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # 데이터베이스 설정
-    DATABASE_URL: Optional[PostgresDsn] = None
-    TEST_DATABASE_URL: Optional[PostgresDsn] = None
+    # 데이터베이스 설정 (모듈식)
+    DB_TYPE: str = "postgresql"  # postgresql, mysql, sqlite
+    DB_HOST: str = "localhost"
+    DB_PORT: int = 5432
+    DB_NAME: str = "fastapi_db"
+    DB_USER: str = "username"
+    DB_PASSWORD: str = "password"
+    DB_SCHEMA: str = "public"
+    DB_POOL_SIZE: int = 10
+    DB_MAX_OVERFLOW: int = 20
+    DB_POOL_PRE_PING: bool = True
+    DB_ECHO: bool = False
+    
+    # 테스트 데이터베이스 설정
+    TEST_DB_TYPE: str = "postgresql"
+    TEST_DB_HOST: str = "localhost"
+    TEST_DB_PORT: int = 5432
+    TEST_DB_NAME: str = "fastapi_test_db"
+    TEST_DB_USER: str = "username"
+    TEST_DB_PASSWORD: str = "password"
+    
+    # SQLite 설정
+    SQLITE_DATABASE_PATH: str = "./data/app.db"
+    TEST_SQLITE_DATABASE_PATH: str = "./data/test.db"
     
     # Redis 설정
-    REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_PASSWORD: Optional[str] = None
+    REDIS_SSL: bool = False
     
     # AI/LLM 설정
     OPENAI_API_KEY: Optional[str] = None
@@ -70,9 +95,23 @@ class Settings(BaseSettings):
     # 로깅 설정
     LOG_LEVEL: str = "INFO"
     
-    # 파일 업로드 설정
+    # 파일 시스템 설정
+    FILE_STORAGE_TYPE: str = "local"  # local, s3
     MAX_FILE_SIZE: int = 10485760  # 10MB
-    UPLOAD_DIR: str = "./uploads"
+    
+    # 로컬 스토리지 설정
+    LOCAL_UPLOAD_DIR: str = "./uploads"
+    LOCAL_STATIC_DIR: str = "./static"
+    
+    # AWS S3 설정
+    AWS_ACCESS_KEY_ID: Optional[str] = None
+    AWS_SECRET_ACCESS_KEY: Optional[str] = None
+    AWS_REGION: str = "ap-northeast-2"
+    S3_BUCKET_NAME: Optional[str] = None
+    S3_UPLOAD_PREFIX: str = "uploads/"
+    S3_STATIC_PREFIX: str = "static/"
+    S3_PUBLIC_READ: bool = True
+    S3_ENDPOINT_URL: Optional[str] = None  # MinIO나 다른 S3 호환 서비스용
     
     class Config:
         env_file = ".env"
@@ -102,8 +141,11 @@ class TestingSettings(Settings):
     DEBUG: bool = True
     LOG_LEVEL: str = "DEBUG"
     
-    # 테스트용 인메모리 데이터베이스
-    DATABASE_URL: Optional[PostgresDsn] = "postgresql://test:test@localhost/test_db"
+    # 테스트용 SQLite 사용
+    DB_TYPE: str = "sqlite"
+    TEST_DB_TYPE: str = "sqlite"
+    SQLITE_DATABASE_PATH: str = "./data/test_app.db"
+    TEST_SQLITE_DATABASE_PATH: str = "./data/test.db"
     
     class Config:
         env_file = ".env.testing"

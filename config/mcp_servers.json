@@ -1,0 +1,64 @@
+{
+    "mcpServers": {
+        "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem"
+            ],
+            "env": {
+                "NODE_ENV": "production"
+            }
+        },
+        "brave-search": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-brave-search"
+            ],
+            "env": {
+                "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+            }
+        },
+        "github": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-github"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+            }
+        },
+        "postgresql": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-postgresql"
+            ],
+            "env": {
+                "POSTGRESQL_CONNECTION_STRING": "${DATABASE_URL}"
+            }
+        },
+        "slack": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-slack"
+            ],
+            "env": {
+                "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}"
+            }
+        },
+        "custom-server": {
+            "command": "python",
+            "args": [
+                "-m",
+                "app.ai.mcp.servers.custom_server"
+            ],
+            "env": {
+                "PYTHONPATH": "."
+            }
+        }
+    }
+}

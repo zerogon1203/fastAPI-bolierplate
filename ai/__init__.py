@@ -10,7 +10,7 @@
 
 from .providers import get_llm_provider, get_embedding_provider
 from .chains import get_chat_chain, get_rag_chain
-from .tools import get_available_tools
+# from .tools import get_available_tools  # TODO: tools 모듈 구현 필요
 from .prompts import PromptManager
 
 __all__ = [
@@ -18,6 +18,6 @@ __all__ = [
     "get_embedding_provider", 
     "get_chat_chain",
     "get_rag_chain",
-    "get_available_tools",
+    # "get_available_tools",  # TODO: tools 모듈 구현 후 주석 해제
     "PromptManager",
 ] 

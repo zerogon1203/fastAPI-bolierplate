@@ -1,0 +1,47 @@
+# 최소한의 핵심 패키지들 (안정적인 버전)
+
+# FastAPI 및 웹 서버
+fastapi[standard]==0.115.5
+uvicorn[standard]==0.32.1
+
+# 데이터베이스 및 ORM
+sqlalchemy==2.0.36
+alembic==1.14.0
+asyncpg==0.30.0
+aiosqlite==0.19.0
+
+# 인증 및 보안
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.17
+
+# 환경 설정
+python-dotenv==1.0.1
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# 캐싱
+redis==5.2.1
+
+# HTTP 클라이언트
+httpx==0.28.1
+
+# 로깅
+loguru==0.7.3
+
+# AI/LLM 기본 (문제 발생 시 개별 설치)
+langchain==0.3.18
+langchain-core==0.3.63
+langchain-openai==0.2.14
+
+# 파일 처리
+python-magic==0.4.27
+pyyaml==6.0.2
+
+# 테스트
+pytest==8.3.4
+pytest-asyncio==0.24.0
+
+# 개발 도구
+black==24.10.0
+isort==5.13.2 

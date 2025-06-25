@@ -8,11 +8,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db
-from core.security import (
-    create_access_token,
-    verify_password,
-    get_password_hash,
-)
+from core.security import (create_access_token, get_password_hash,
+                           verify_password)
 from core.settings import settings
 
 router = APIRouter()
@@ -25,7 +22,7 @@ async def login(
 ) -> Any:
     """
     사용자 로그인
-    
+
     OAuth2 호환 토큰 로그인, 향후 JWT 토큰 사용 가능
     """
     # 실제로는 데이터베이스에서 사용자 검증
@@ -36,13 +33,13 @@ async def login(
             subject=form_data.username,
             expires_delta=access_token_expires,
         )
-        
+
         return {
             "access_token": access_token,
             "token_type": "bearer",
             "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         }
-    
+
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="잘못된 사용자명 또는 비밀번호",
@@ -62,13 +59,13 @@ async def register(
     """
     # 실제로는 데이터베이스에 사용자 생성
     # 여기서는 예시를 위한 간단한 응답
-    
+
     # 비밀번호 해싱
     hashed_password = get_password_hash(password)
-    
+
     # TODO: 데이터베이스에 사용자 저장
     # user = await create_user(db, username, hashed_password, email)
-    
+
     return {
         "message": "사용자가 성공적으로 등록되었습니다",
         "username": username,
@@ -95,4 +92,4 @@ async def logout(
     사용자 로그아웃
     """
     # 실제로는 토큰 블랙리스트 처리
-    return {"message": "성공적으로 로그아웃되었습니다"} 
+    return {"message": "성공적으로 로그아웃되었습니다"}

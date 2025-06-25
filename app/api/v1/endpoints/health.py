@@ -36,23 +36,27 @@ async def detailed_health_check(
         "service": settings.APP_NAME,
         "version": settings.APP_VERSION,
         "timestamp": "2024-01-01T00:00:00Z",  # 실제로는 현재 시간
-        "checks": {}
+        "checks": {},
     }
-    
+
     # 데이터베이스 연결 확인
     try:
         db_healthy = await check_db_connection()
         health_status["checks"]["database"] = {
             "status": "healthy" if db_healthy else "unhealthy",
-            "message": "Database connection successful" if db_healthy else "Database connection failed"
+            "message": (
+                "Database connection successful"
+                if db_healthy
+                else "Database connection failed"
+            ),
         }
     except Exception as e:
         health_status["checks"]["database"] = {
             "status": "unhealthy",
-            "message": f"Database check failed: {str(e)}"
+            "message": f"Database check failed: {str(e)}",
         }
         health_status["status"] = "unhealthy"
-    
+
     # AI 서비스 확인
     ai_services = []
     if settings.OPENAI_API_KEY:
@@ -61,26 +65,32 @@ async def detailed_health_check(
         ai_services.append("Anthropic")
     if settings.GOOGLE_API_KEY:
         ai_services.append("Google")
-    
+
     health_status["checks"]["ai_services"] = {
         "status": "configured" if ai_services else "not_configured",
         "available_services": ai_services,
-        "message": f"{len(ai_services)} AI service(s) configured"
+        "message": f"{len(ai_services)} AI service(s) configured",
     }
-    
+
     # MCP 서비스 확인
     health_status["checks"]["mcp"] = {
         "status": "enabled" if settings.MCP_ENABLED else "disabled",
-        "config_path": settings.MCP_SERVERS_CONFIG_PATH if settings.MCP_ENABLED else None,
-        "message": "MCP service is enabled" if settings.MCP_ENABLED else "MCP service is disabled"
+        "config_path": (
+            settings.MCP_SERVERS_CONFIG_PATH if settings.MCP_ENABLED else None
+        ),
+        "message": (
+            "MCP service is enabled"
+            if settings.MCP_ENABLED
+            else "MCP service is disabled"
+        ),
     }
-    
+
     # Redis 연결 확인 (향후 구현)
     health_status["checks"]["redis"] = {
         "status": "not_implemented",
-        "message": "Redis health check not implemented yet"
+        "message": "Redis health check not implemented yet",
     }
-    
+
     return health_status
 
 
@@ -91,19 +101,16 @@ async def readiness_check() -> Any:
     """
     # 기본적인 준비 상태 확인
     # 데이터베이스 연결, 필수 설정 등 확인
-    
+
     db_ready = await check_db_connection()
-    
+
     if not db_ready and settings.DATABASE_URL:
         return {
             "status": "not_ready",
-            "message": "Database connection required but not available"
+            "message": "Database connection required but not available",
         }
-    
-    return {
-        "status": "ready",
-        "message": "Service is ready to handle requests"
-    }
+
+    return {"status": "ready", "message": "Service is ready to handle requests"}
 
 
 @router.get("/live")
@@ -111,7 +118,4 @@ async def liveness_check() -> Any:
     """
     생존 상태 확인 (Kubernetes liveness probe 용)
     """
-    return {
-        "status": "alive",
-        "message": "Service is alive and running"
-    } 
+    return {"status": "alive", "message": "Service is alive and running"}

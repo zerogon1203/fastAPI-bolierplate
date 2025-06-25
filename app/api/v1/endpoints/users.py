@@ -5,7 +5,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db, get_current_user, get_current_active_user
+from app.api.deps import get_current_active_user, get_current_user, get_db
 
 router = APIRouter()
 
@@ -44,7 +44,7 @@ async def update_current_user(
         updates["email"] = email
     if full_name:
         updates["full_name"] = full_name
-    
+
     return {
         "message": "사용자 정보가 업데이트되었습니다",
         "username": current_user,
@@ -73,7 +73,7 @@ async def get_users(
             },
             {
                 "username": "user1",
-                "email": "user1@example.com", 
+                "email": "user1@example.com",
                 "is_active": True,
                 "roles": ["user"],
             },
@@ -102,7 +102,7 @@ async def get_user_by_username(
             "roles": ["admin"],
             "created_at": "2024-01-01T00:00:00Z",
         }
-    
+
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="사용자를 찾을 수 없습니다",
@@ -124,5 +124,5 @@ async def delete_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="자기 자신은 삭제할 수 없습니다",
         )
-    
-    return {"message": f"사용자 '{username}'이 삭제되었습니다"} 
+
+    return {"message": f"사용자 '{username}'이 삭제되었습니다"}

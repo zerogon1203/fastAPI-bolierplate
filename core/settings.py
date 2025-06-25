@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
     SECRET_KEY: str = secrets.token_urlsafe(32)
+    ENVIRONMENT: str = "local"
     
     # 서버 설정
     HOST: str = "0.0.0.0"
@@ -160,6 +161,7 @@ class TestingSettings(Settings):
 def get_settings() -> Settings:
     """환경에 따른 설정 반환"""
     import os
+    
     environment = os.getenv("ENVIRONMENT", "development").lower()
     
     if environment == "production":

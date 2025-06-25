@@ -42,8 +42,8 @@ dev: ## 개발 모드로 서버를 실행합니다 (hot reload)
 	uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 db-create: ## 데이터베이스를 생성합니다
-	PYTHONPATH=. python scripts/create_db.py
-
+	PYTHONPATH=. python scripts/create_db.py && \
+	alembic upgrade head
 # 데이터베이스 마이그레이션
 db-upgrade: ## 데이터베이스 마이그레이션을 적용합니다
 	alembic upgrade head
@@ -117,3 +117,11 @@ docs: ## API 문서를 생성합니다
 # Secret Key 생성
 gen-secret-key: ## Secret Key를 생성합니다
 	python -c "import secrets; print(secrets.token_urlsafe(32))"
+
+
+# 모델 생성
+model-create: ## 모델 생성 후 마이그레이션 자동 처리
+	PYTHONPATH=. name=$(name) python scripts/create_model.py && \
+	alembic upgrade head && \
+	alembic revision --autogenerate -m "create $(name) model"
+

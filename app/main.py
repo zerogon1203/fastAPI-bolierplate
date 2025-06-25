@@ -10,10 +10,10 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-from core.settings import settings
-from core.database import create_tables, check_db_connection
-from core.logging import log_request, log_response, setup_logging
 from app.api.v1.api import api_router
+from core.database import check_db_connection, create_tables
+from core.logging import log_request, log_response, setup_logging
+from core.settings import settings
 
 
 @asynccontextmanager
@@ -21,14 +21,14 @@ async def lifespan(app: FastAPI):
     """애플리케이션 생명주기 관리"""
     # 로깅 설정 초기화
     setup_logging()
-    
+
     # 시작 시
     logger.info("🚀 FastAPI 애플리케이션 시작")
-    
+
     # 데이터베이스 연결 확인
     if await check_db_connection():
         logger.info("✅ 데이터베이스 연결 성공")
-        
+
         # 개발 환경에서만 테이블 자동 생성
         if settings.DEBUG:
             await create_tables()
@@ -41,18 +41,24 @@ async def lifespan(app: FastAPI):
         logger.info("🧠 AI 서비스 사용")
         logger.info(f"💻 AI 프로바이더 : {settings.DEFAULT_PROVIDER}")
         logger.info(f"🔮 AI 모델 : {settings.DEFAULT_LLM_MODEL}")
-    
+
         if settings.MCP_ENABLED:
             logger.info("🤖 MCP 서비스 초기화")
-        
-        if settings.OPENAI_API_KEY or settings.ANTHROPIC_API_KEY or settings.GOOGLE_API_KEY or settings.OLLAMA_HOST:
+
+        if (
+            settings.OPENAI_API_KEY
+            or settings.ANTHROPIC_API_KEY
+            or settings.GOOGLE_API_KEY
+            or settings.OLLAMA_HOST
+        ):
             logger.info("🧠 AI 서비스 사용 가능")
         else:
-            logger.warning("⚠️ AI 서비스 사용 불가 - 사용가능한 API 키 또는 호스트가 없습니다")
-    
-    
+            logger.warning(
+                "⚠️ AI 서비스 사용 불가 - 사용가능한 API 키 또는 호스트가 없습니다"
+            )
+
     yield
-    
+
     # 종료 시
     logger.info("🛑 FastAPI 애플리케이션 종료")
 
@@ -71,8 +77,8 @@ app = FastAPI(
 # 신뢰할 수 있는 호스트 설정 (프로덕션)
 if not settings.DEBUG:
     app.add_middleware(
-        TrustedHostMiddleware, 
-        allowed_hosts=["localhost", "127.0.0.1", "*.yourdomain.com"]
+        TrustedHostMiddleware,
+        allowed_hosts=["localhost", "127.0.0.1", "*.yourdomain.com"],
     )
 
 # CORS 미들웨어
@@ -91,7 +97,7 @@ async def request_logging_middleware(request: Request, call_next):
     """요청/응답 로깅 미들웨어"""
     request_id = str(uuid.uuid4())
     start_time = time.time()
-    
+
     # 요청 로깅
     log_request(
         request_id=request_id,
@@ -100,11 +106,11 @@ async def request_logging_middleware(request: Request, call_next):
         user_agent=request.headers.get("user-agent"),
         client_ip=request.client.host if request.client else None,
     )
-    
+
     # 요청 처리
     try:
         response = await call_next(request)
-        
+
         # 응답 로깅
         process_time = time.time() - start_time
         log_response(
@@ -112,13 +118,13 @@ async def request_logging_middleware(request: Request, call_next):
             status_code=response.status_code,
             duration=process_time,
         )
-        
+
         # 응답 헤더에 요청 ID 추가
         response.headers["X-Request-ID"] = request_id
         response.headers["X-Process-Time"] = str(process_time)
-        
+
         return response
-        
+
     except Exception as e:
         # 에러 로깅
         process_time = time.time() - start_time
@@ -129,7 +135,7 @@ async def request_logging_middleware(request: Request, call_next):
             error=str(e),
             duration=process_time,
         )
-        
+
         # 에러 응답
         return JSONResponse(
             status_code=500,
@@ -143,7 +149,7 @@ async def request_logging_middleware(request: Request, call_next):
 async def health_check():
     """헬스체크 엔드포인트"""
     db_status = await check_db_connection()
-    
+
     return {
         "status": "healthy",
         "app_name": settings.APP_NAME,
@@ -160,7 +166,7 @@ async def metrics():
     """메트릭 엔드포인트"""
     if not settings.DEBUG:
         return {"detail": "Metrics endpoint disabled in production"}
-    
+
     return {
         "app_name": settings.APP_NAME,
         "version": settings.APP_VERSION,
@@ -187,11 +193,11 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "app.main:app",
         host=settings.HOST,
         port=settings.PORT,
         reload=settings.DEBUG,
         log_level=settings.LOG_LEVEL.lower(),
-    ) 
+    )

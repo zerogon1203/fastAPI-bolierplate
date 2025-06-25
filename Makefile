@@ -122,6 +122,3 @@ gen-secret-key: ## Secret Key를 생성합니다
 # 모델 생성
 model-create: ## 모델 생성 후 마이그레이션 자동 처리
 	PYTHONPATH=. name=$(name) python scripts/create_model.py && \
-	alembic upgrade head && \
-	alembic revision --autogenerate -m "create $(name) model"
-

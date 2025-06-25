@@ -5,6 +5,7 @@ uvicorn[standard]==0.32.1
 # 데이터베이스 및 ORM
 sqlalchemy==2.0.36
 alembic==1.14.0
+psycopg2-binary==2.9.10  # PostgreSQL 동기 드라이버
 asyncpg==0.30.0  # PostgreSQL 비동기 드라이버
 aiomysql==0.2.0  # MySQL 비동기 드라이버
 pymysql==1.1.0  # MySQL 동기 드라이버
@@ -47,7 +48,7 @@ langchain==0.3.18
 langchain-core==0.3.63
 langchain-community==0.3.17
 langchain-openai==0.2.14
-langchain-ollama==0.2.14
+langchain-ollama==0.3.3
 langchain-anthropic==0.3.15
 langchain-google-genai==2.0.8
 langsmith==0.3.45

@@ -160,7 +160,6 @@ class TestingSettings(Settings):
 def get_settings() -> Settings:
     """환경에 따른 설정 반환"""
     import os
-    
     environment = os.getenv("ENVIRONMENT", "development").lower()
     
     if environment == "production":

@@ -41,6 +41,9 @@ run: ## 프로덕션 모드로 서버를 실행합니다
 dev: ## 개발 모드로 서버를 실행합니다 (hot reload)
 	uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
+db-create: ## 데이터베이스를 생성합니다
+	PYTHONPATH=. python scripts/create_db.py
+
 # 데이터베이스 마이그레이션
 db-upgrade: ## 데이터베이스 마이그레이션을 적용합니다
 	alembic upgrade head

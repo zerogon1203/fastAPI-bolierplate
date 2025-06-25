@@ -69,10 +69,14 @@ class Settings(BaseSettings):
     REDIS_SSL: bool = False
     
     # AI/LLM 설정
+    USE_AI_SERVICE: bool = False
+    DEFAULT_PROVIDER: Optional[str] = None
+    DEFAULT_LLM_MODEL: Optional[str] = None
     OPENAI_API_KEY: Optional[str] = None
     ANTHROPIC_API_KEY: Optional[str] = None
     GOOGLE_API_KEY: Optional[str] = None
     HUGGINGFACE_API_KEY: Optional[str] = None
+    OLLAMA_HOST: Optional[str] = None
     
     # LangSmith 설정
     LANGCHAIN_TRACING_V2: bool = False

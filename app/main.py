@@ -35,13 +35,21 @@ async def lifespan(app: FastAPI):
             logger.info("📋 데이터베이스 테이블 생성 완료")
     else:
         logger.warning("⚠️ 데이터베이스 연결 실패 - 데이터베이스 없이 실행")
-    
+
     # AI 서비스 초기화
-    if settings.MCP_ENABLED:
-        logger.info("🤖 MCP 서비스 초기화")
+    if settings.USE_AI_SERVICE:
+        logger.info("🧠 AI 서비스 사용")
+        logger.info(f"💻 AI 프로바이더 : {settings.DEFAULT_PROVIDER}")
+        logger.info(f"🔮 AI 모델 : {settings.DEFAULT_LLM_MODEL}")
     
-    if settings.OPENAI_API_KEY or settings.ANTHROPIC_API_KEY:
-        logger.info("🧠 AI 서비스 사용 가능")
+        if settings.MCP_ENABLED:
+            logger.info("🤖 MCP 서비스 초기화")
+        
+        if settings.OPENAI_API_KEY or settings.ANTHROPIC_API_KEY or settings.GOOGLE_API_KEY or settings.OLLAMA_HOST:
+            logger.info("🧠 AI 서비스 사용 가능")
+        else:
+            logger.warning("⚠️ AI 서비스 사용 불가 - 사용가능한 API 키 또는 호스트가 없습니다")
+    
     
     yield
     
@@ -114,6 +122,7 @@ async def request_logging_middleware(request: Request, call_next):
     except Exception as e:
         # 에러 로깅
         process_time = time.time() - start_time
+        print(e)
         logger.error(
             f"Request failed: {str(e)}",
             request_id=request_id,

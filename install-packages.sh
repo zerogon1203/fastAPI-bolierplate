@@ -66,6 +66,11 @@ if [[ $install_google == "y" || $install_google == "Y" ]]; then
     pip install langchain-google-genai==2.0.8
 fi
 
+read -p "Ollama 지원을 설치하시겠습니까? (y/n): " install_ollama
+if [[ $install_ollama == "y" || $install_ollama == "Y" ]]; then
+    pip install langchain-ollama==0.2.14
+fi
+
 # 9단계: 파일 처리
 echo "📦 9단계: 파일 처리 패키지 설치..."
 pip install python-magic==0.4.27

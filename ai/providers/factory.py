@@ -5,6 +5,7 @@ from .base import BaseLLMProvider, BaseEmbeddingProvider
 from .openai_provider import OpenAIProvider, OpenAIEmbeddingProvider
 from .anthropic_provider import AnthropicProvider
 from .google_provider import GoogleProvider
+from .ollama_provider import OllamaProvider
 from core.settings import settings
 
 
@@ -17,12 +18,12 @@ def get_llm_provider(
     """LLM 프로바이더 인스턴스 반환
     
     Args:
-        provider_name: 프로바이더 이름 (openai, anthropic, google)
+        provider_name: 프로바이더 이름 (openai, anthropic, google, ollama)
         api_key: API 키
         model_name: 모델 이름
         **kwargs: 추가 설정
     """
-    provider_name = provider_name or "openai"
+    provider_name = provider_name or settings.DEFAULT_PROVIDER or "openai"
     
     if provider_name.lower() == "openai":
         return OpenAIProvider(api_key=api_key, model_name=model_name, **kwargs)
@@ -30,6 +31,8 @@ def get_llm_provider(
         return AnthropicProvider(api_key=api_key, model_name=model_name, **kwargs)
     elif provider_name.lower() == "google":
         return GoogleProvider(api_key=api_key, model_name=model_name, **kwargs)
+    elif provider_name.lower() == "ollama":
+        return OllamaProvider(model_name=model_name, **kwargs)
     else:
         raise ValueError(f"지원하지 않는 프로바이더: {provider_name}")
 
@@ -83,6 +86,12 @@ def get_available_providers() -> dict:
         providers["google"] = {
             "name": "Google",
             "models": google_provider.available_models
+        }
+    if settings.OLLAMA_HOST:
+        ollama_provider = OllamaProvider()
+        providers["ollama"] = {
+            "name": "Ollama",
+            "models": ollama_provider.available_models
         }
     
     return providers 

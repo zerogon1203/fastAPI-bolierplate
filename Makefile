@@ -110,3 +110,7 @@ ai-setup: ## AI 관련 초기 설정을 진행합니다
 # 문서 생성
 docs: ## API 문서를 생성합니다
 	@echo "FastAPI 자동 문서는 http://localhost:8000/docs 에서 확인할 수 있습니다." 
+
+# Secret Key 생성
+gen-secret-key: ## Secret Key를 생성합니다
+	python -c "import secrets; print(secrets.token_urlsafe(32))"

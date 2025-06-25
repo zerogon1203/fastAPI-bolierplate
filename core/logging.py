@@ -90,7 +90,7 @@ def setup_logging():
     )
 
 
-def get_logger(name: str) -> logger:
+def get_logger(name: str):
     """이름을 가진 로거 반환"""
     return logger.bind(name=name)
 

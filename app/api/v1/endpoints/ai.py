@@ -8,13 +8,28 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_db, get_current_user_optional
 from core.settings import settings
 from core.logging import log_ai_event, log_mcp_event
+from ai.providers import get_llm_provider, get_available_providers
 
 router = APIRouter()
+
+@router.get("/")
+async def get_ai_info(
+    current_user: Optional[str] = Depends(get_current_user_optional),
+) -> Any:
+    """ 
+    AI 정보 조회
+    """
+    providers = get_available_providers()
+    return {
+        "providers": providers,
+    }
+
 
 
 @router.post("/chat")
 async def chat_with_ai(
     message: str,
+    provider: Optional[str] = None,
     model: Optional[str] = None,
     current_user: Optional[str] = Depends(get_current_user_optional),
     db: AsyncSession = Depends(get_db),
@@ -25,26 +40,38 @@ async def chat_with_ai(
     Langchain을 사용하여 다양한 LLM 모델과 대화
     """
     # AI 서비스 가용성 확인
-    if not (settings.OPENAI_API_KEY or settings.ANTHROPIC_API_KEY):
+    if not (settings.OPENAI_API_KEY or settings.ANTHROPIC_API_KEY or settings.GOOGLE_API_KEY or settings.OLLAMA_HOST):
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="AI 서비스가 설정되지 않았습니다"
         )
-    
+    print(f"settings.DEFAULT_PROVIDER : {settings.DEFAULT_PROVIDER}")
+    print(f"settings.DEFAULT_LLM_MODEL : {settings.DEFAULT_LLM_MODEL}")
+    print(f"provider : {provider}")
+    print(f"model : {model}")
     # 사용할 모델 결정
     selected_model = model or settings.DEFAULT_LLM_MODEL
+
+    provider = provider or settings.DEFAULT_PROVIDER
+
+    print(provider, selected_model)
+    
+    llm_provider = get_llm_provider(provider_name=provider, model_name=selected_model)
+    
     
     # AI 이벤트 로깅
     log_ai_event(
         "chat_request",
         user=current_user,
+        provider=provider,
         model=selected_model,
         message_length=len(message)
     )
-    
-    # 실제로는 Langchain을 사용한 AI 응답 생성
-    # 여기서는 예시 응답
-    response = f"안녕하세요! '{message}'에 대한 답변입니다. (모델: {selected_model})"
+    response = await llm_provider.chat_completion(
+        messages=[
+            {"role": "user", "content": message}
+        ]
+    )
     
     log_ai_event(
         "chat_response",

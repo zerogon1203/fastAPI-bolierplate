@@ -9,7 +9,7 @@ from langchain_core.embeddings import Embeddings
 class BaseLLMProvider(ABC):
     """LLM 프로바이더 기본 추상 클래스"""
     
-    def __init__(self, api_key: str, model_name: str = None, **kwargs):
+    def __init__(self, api_key: str = None, model_name: str = None, **kwargs):
         self.api_key = api_key
         self.model_name = model_name
         self.kwargs = kwargs

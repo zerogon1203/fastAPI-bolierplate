@@ -4,7 +4,7 @@ from .base import BaseLLMProvider, BaseEmbeddingProvider
 from .openai_provider import OpenAIProvider, OpenAIEmbeddingProvider
 from .anthropic_provider import AnthropicProvider
 from .google_provider import GoogleProvider
-from .factory import get_llm_provider, get_embedding_provider
+from .factory import get_llm_provider, get_embedding_provider, get_available_providers
 
 __all__ = [
     "BaseLLMProvider",
@@ -13,6 +13,8 @@ __all__ = [
     "OpenAIEmbeddingProvider", 
     "AnthropicProvider",
     "GoogleProvider",
+    "OllamaProvider",
     "get_llm_provider",
     "get_embedding_provider",
+    "get_available_providers"
 ] 
